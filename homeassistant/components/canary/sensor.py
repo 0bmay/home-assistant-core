@@ -175,6 +175,7 @@ class CanarySensor(CoordinatorEntity[CanaryDataUpdateCoordinator], SensorEntity)
             model=device.device_type["name"],
             manufacturer=MANUFACTURER,
             name=device.name,
+            sw_version=device.firmware_version,
         )
         self._attr_native_unit_of_measurement = sensor_type[1]
         self._icon = None if sensor_type[2] is None else f"mdi:{sensor_type[2]}"
