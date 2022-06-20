@@ -6,6 +6,7 @@ import logging
 from typing import Final
 
 from canary.api import Api
+from canary.auth import Auth
 from requests.exceptions import ConnectTimeout, HTTPError
 import voluptuous as vol
 
@@ -139,10 +140,11 @@ async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> Non
 
 def _get_canary_api_instance(entry: ConfigEntry) -> Api:
     """Initialize a new instance of CanaryApi."""
-    canary = Api(
-        entry.data[CONF_USERNAME],
-        entry.data[CONF_PASSWORD],
-        entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
-    )
+    canary_login = {
+        "username": entry.data[CONF_USERNAME],
+        "password": entry.data[CONF_PASSWORD],
+    }
+    auth = Auth(canary_login, no_prompt=True)
+    canary = Api(auth, entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT))
 
     return canary

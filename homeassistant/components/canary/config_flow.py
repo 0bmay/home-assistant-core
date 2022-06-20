@@ -5,6 +5,7 @@ import logging
 from typing import Any, Final
 
 from canary.api import Api
+from canary.auth import Auth
 from requests.exceptions import ConnectTimeout, HTTPError
 import voluptuous as vol
 
@@ -29,12 +30,12 @@ def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> bool:
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
     # constructor does login call
-    Api(
-        data[CONF_USERNAME],
-        data[CONF_PASSWORD],
-        data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
-    )
-
+    canary_login = {
+        "username": data[CONF_USERNAME],
+        "password": data[CONF_PASSWORD],
+    }
+    auth = Auth(canary_login, no_prompt=True)
+    Api(auth, data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT))
     return True
 
 
